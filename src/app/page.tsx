@@ -17,8 +17,8 @@ export default function Home() {
         {/* Unified Full-Width Body Content */}
         <div className="bg-white dark:bg-gray-800 rounded-md shadow-lg p-5 md:p-6 hover:shadow-xl transition-shadow col-span-full">
           {/* Centered Welcome Header */}
-          <div className="text-center mb-8">
-            <h1>
+          <div className="text-center mt-6">
+            <h1 className="text-4xl">
               Welcome
             </h1>
           </div>
@@ -53,7 +53,7 @@ export default function Home() {
               }
             />
           </div>
-          Sign In Here!
+         
         </div>
         {/* Footer Component */}
         <div className="col-span-full">
