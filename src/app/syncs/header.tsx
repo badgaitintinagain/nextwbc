@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import NightLightSwitch from "./nightlightswitch";
 
@@ -7,6 +9,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -25,6 +28,11 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Close mobile menu after navigation
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
       {/* Header - Full width on all devices */}
@@ -42,14 +50,31 @@ export default function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Organic Detector</h1>
+            <Link href="/">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Organic Detector</h1>
+            </Link>
           </div>
           
-          {/* Left Menu */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-6">
-            <a href="#" className="text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 font-medium transition hover:scale-105">Home</a>
-            <a href="#" className="text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 font-medium transition hover:scale-105">Predict</a>
-            <a href="#" className="text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 font-medium transition hover:scale-105">Tutorial</a>
+            <Link 
+              href="/" 
+              className={`text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 font-medium transition hover:scale-105 ${pathname === '/' ? 'border-b-2 border-blue-600 dark:border-blue-400' : ''}`}
+            >
+              Home
+            </Link>
+            <Link 
+              href="/predict" 
+              className={`text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 font-medium transition hover:scale-105 ${pathname === '/predict' ? 'border-b-2 border-blue-600 dark:border-blue-400' : ''}`}
+            >
+              Predict
+            </Link>
+            <Link 
+              href="/tutorial" 
+              className={`text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 font-medium transition hover:scale-105 ${pathname === '/tutorial' ? 'border-b-2 border-blue-600 dark:border-blue-400' : ''}`}
+            >
+              Tutorial
+            </Link>
           </div>
           
           {/* Setting, Theme Toggle, and User Icon */}
@@ -81,10 +106,50 @@ export default function Header() {
       >
         <div className="bg-white dark:bg-gray-800 text-blue-800 dark:text-blue-200 p-4 rounded-md shadow-2xl">
           <ul className="space-y-2">
-            <li><a href="#" className="block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all">Home</a></li>
-            <li><a href="#" className="block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all">About</a></li>
-            <li><a href="#" className="block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all">Services</a></li>
-            <li><a href="#" className="block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all">Contact</a></li>
+            <li>
+              <Link 
+                href="/" 
+                className={`block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all ${
+                  pathname === '/' ? 'bg-blue-100 dark:bg-blue-900' : ''
+                }`}
+                onClick={closeMenu}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link 
+                href="/predict" 
+                className={`block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all ${
+                  pathname === '/predict' ? 'bg-blue-100 dark:bg-blue-900' : ''
+                }`}
+                onClick={closeMenu}
+              >
+                Predict
+              </Link>
+            </li>
+            <li>
+              <Link 
+                href="/tutorial" 
+                className={`block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all ${
+                  pathname === '/tutorial' ? 'bg-blue-100 dark:bg-blue-900' : ''
+                }`}
+                onClick={closeMenu}
+              >
+                Tutorial
+              </Link>
+            </li>
+            <li>
+              <Link 
+                href="/contact" 
+                className={`block px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all ${
+                  pathname === '/contact' ? 'bg-blue-100 dark:bg-blue-900' : ''
+                }`}
+                onClick={closeMenu}
+              >
+                Contact
+              </Link>
+            </li>
             <li className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
               <div className="px-4 py-2">
                 <NightLightSwitch showLabel={true} className="w-full justify-start" />
