@@ -2,6 +2,7 @@
 
 import Footer from "./syncs/footer";
 import Header from "./syncs/header";
+import InfoCard from "./syncs/infocard";
 
 export default function Home() {
   return (
@@ -15,23 +16,45 @@ export default function Home() {
         
         {/* Unified Full-Width Body Content */}
         <div className="bg-white dark:bg-gray-800 rounded-md shadow-lg p-5 md:p-6 hover:shadow-xl transition-shadow col-span-full">
-          <h1 className="text-3xl font-semibold text-blue-700 dark:text-blue-300 mb-5">Welcome to Our Website</h1>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
-            This is the main content area of our website. The layout has been updated
-            using the new grid system specifications with responsive design.
-          </p>
-          <p className="text-gray-700 dark:text-gray-300 mb-5">
-            The layout adapts to different screen sizes:
-          </p>
-          <ul className="list-disc pl-6 mb-5 text-gray-700 dark:text-gray-300 space-y-2">
-            <li>On mobile: Header → Content → Footer</li>
-            <li>On desktop: Clean full-width layout</li>
-          </ul>
-          <button className="px-5 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:-translate-y-1 hover:shadow-md">
-            Learn More
-          </button>
+          {/* Centered Welcome Header */}
+          <div className="text-center mb-8">
+            <h1>
+              Welcome
+            </h1>
+          </div>
+
+          {/* Three Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
+            <InfoCard 
+              title="Feature One" 
+              description="Discover our first amazing feature that will revolutionize how you work. Simple yet powerful tools at your fingertips."
+              icon={
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              }
+            />
+            <InfoCard 
+              title="Feature Two" 
+              description="Our second feature sets us apart from the competition with its innovative approach to solving common problems."
+              icon={
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              }
+            />
+            <InfoCard 
+              title="Feature Three" 
+              description="The third feature completes our suite of tools, ensuring you have everything you need to succeed in your projects."
+              icon={
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              }
+            />
+          </div>
+          Sign In Here!
         </div>
-        
         {/* Footer Component */}
         <div className="col-span-full">
           <Footer />
