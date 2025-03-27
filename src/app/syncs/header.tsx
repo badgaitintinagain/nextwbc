@@ -1,5 +1,6 @@
 "use client";
 
+import AuthModals from '@/components/auth/AuthModals';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -10,6 +11,7 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -88,7 +90,10 @@ export default function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </a>
-            <a href="#" className="text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 transition hover:scale-110 p-1 hover:bg-blue-100 dark:hover:bg-gray-700 rounded-full">
+            <a 
+              onClick={() => setIsAuthOpen(true)}
+              className="text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 transition hover:scale-110 p-1 hover:bg-blue-100 dark:hover:bg-gray-700 rounded-full cursor-pointer"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
@@ -175,6 +180,7 @@ export default function Header() {
           </ul>
         </div>
       </div>
+      <AuthModals isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>
   );
 }
