@@ -4,7 +4,7 @@ import AuthModals from '@/components/auth/AuthModals';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import NightLightSwitch from "./nightlightswitch";
+import NightLightSwitch from "../../app/syncs/nightlightswitch";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);

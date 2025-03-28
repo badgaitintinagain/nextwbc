@@ -1,7 +1,7 @@
 "use client";
 
-import Footer from "./syncs/footer";
-import Header from "./syncs/header";
+import Footer from "../components/layout/footer";
+import Header from "../components/layout/header";
 import InfoCard from "./syncs/infocard";
 
 export default function Home() {

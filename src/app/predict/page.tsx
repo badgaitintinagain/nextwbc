@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Footer from "../syncs/footer";
-import Header from "../syncs/header";
+import Footer from "../../components/layout/footer";
+import Header from "../../components/layout/header";
 
 export default function PredictPage() {
   // State for dropdown visibility
