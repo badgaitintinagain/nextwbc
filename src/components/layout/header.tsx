@@ -1,6 +1,7 @@
 "use client";
 
 import AuthModals from '@/components/auth/AuthModals';
+import { useAuth } from '@/contexts/AuthContext';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -8,14 +9,24 @@ import NightLightSwitch from "../../app/syncs/nightlightswitch";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // เพิ่ม loading state
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { user, profile, signOut } = useAuth();
 
-  // Close menu when clicking outside
+  // Close menus when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      if (
+        profileRef.current && 
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
       if (
         menuRef.current && 
         !menuRef.current.contains(event.target as Node) &&
@@ -30,14 +41,25 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close mobile menu after navigation
-  const closeMenu = () => {
-    setIsOpen(false);
+  const handleSignOut = async () => {
+    try {
+      setLoading(true); // เริ่ม loading
+      setIsProfileOpen(false); // ปิด dropdown ก่อน
+      await signOut();
+      // ไม่ต้อง setIsProfileOpen(false) อีกครั้งเพราะ user จะเป็น null และ dropdown จะถูกซ่อนโดยอัตโนมัติ
+    } catch (error) {
+      console.error('Sign out error:', error);
+    } finally {
+      setLoading(false); // หยุด loading
+    }
   };
+
+  function closeMenu(event: React.MouseEvent<HTMLAnchorElement>): void {
+    setIsOpen(false);
+  }
 
   return (
     <>
-      {/* Header - Full width on all devices */}
       <div className="col-span-1 md:col-span-5 md:col-start-1 md:row-start-1 bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-sm text-blue-800 dark:text-blue-200 rounded-md shadow-lg py-2 px-4 sticky top-2 z-30">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
@@ -79,25 +101,71 @@ export default function Header() {
             </Link>
           </div>
           
-          {/* Setting, Theme Toggle, and User Icon */}
-          <div className="hidden md:flex items-center space-x-3">
-            {/* Dark/Light Theme Toggle */}
+          {/* Right side: Theme Toggle & Auth */}
+          <div className="flex items-center space-x-3">
             <NightLightSwitch />
             
-            <a href="#" className="text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 transition hover:scale-110 p-1 hover:bg-blue-100 dark:hover:bg-gray-700 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </a>
-            <a 
-              onClick={() => setIsAuthOpen(true)}
-              className="text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 transition hover:scale-110 p-1 hover:bg-blue-100 dark:hover:bg-gray-700 rounded-full cursor-pointer"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </a>
+            {user ? (
+              <div ref={profileRef} className="relative">
+                <button 
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  {/* Avatar */}
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">
+                      {profile?.username?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}
+                    </span>
+                  </div>
+                  
+                  {/* Username/Email */}
+                  <div className="hidden md:block text-left">
+                    <p className="text-sm font-medium">
+                      {profile?.username || user.email?.split('@')[0]}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {profile?.role || 'user'}
+                    </p>
+                  </div>
+                </button>
+
+                {/* Dropdown Menu */}
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 animate-fadeIn">
+                    <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Signed in as</p>
+                      <p className="text-sm font-medium truncate">{user?.email}</p>
+                    </div>
+
+                    <div className="p-2">
+                      <button
+                        onClick={handleSignOut}
+                        disabled={loading} // เพิ่ม loading state
+                        className={`w-full text-left px-3 py-2 text-sm text-red-600 rounded-md transition-colors
+                          ${loading 
+                            ? 'opacity-50 cursor-not-allowed' 
+                            : 'hover:bg-red-50 dark:hover:bg-red-900/20'
+                          }`}
+                      >
+                        {loading ? 'Signing out...' : 'Sign Out'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsAuthOpen(true)}
+                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+                  />
+                </svg>
+                <span className="hidden md:block text-sm font-medium">Sign In</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
